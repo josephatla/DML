@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buat Pesanan</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <style>
+    /* CSS Reset */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Ubah agar lebih fleksibel */
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+    
+    .container {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 500px; /* Sedikit dilebarkan untuk desktop */
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    header { margin-bottom: 1.5rem; }
+    header h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    header p { color: #6b7280; font-size: 0.875rem; }
+    
+    .items-container {
+      max-height: 55vh;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      padding-right: 0.25rem; /* Memberi ruang untuk scrollbar */
+    }
+    
+    .item-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-end;
+      background-color: #f9fafb;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .item-row:hover {
+      border-color: #d1d5db;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .input-group.name-group { flex: 1; }
+    .input-group.qty-group { width: 5.5rem; }
+    
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #4b5563;
+      margin-bottom: 0.25rem;
+    }
+    
+    input {
+      height: 48px;
+      padding: 0 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 16px;
+      width: 100%;
+      transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Styling untuk Input yang Error */
+    input.input-error {
+      border-color: #ef4444;
+      background-color: #fef2f2;
+    }
+    
+    input.input-error:focus {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
+    
+    button {
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    
+    .delete-btn {
+      width: 48px;
+      height: 48px;
+      background-color: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      flex-shrink: 0;
+    }
+
+    .delete-btn:hover {
+      background-color: #fee2e2;
+    }
+    
+    .add-btn {
+      width: 100%;
+      height: 48px;
+      background-color: #ffffff;
+      color: #3b82f6;
+      border: 2px solid #3b82f6; /* Berubah menjadi solid */
+      margin-bottom: 1rem;
+    }
+
+    .add-btn:hover {
+      background-color: #eff6ff;
+    }
+
+    .add-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Styling untuk Pesan Error Global */
+    #error-message {
+      color: #ef4444;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .bottom-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+    
+    .clear-btn {
+      width: 56px;
+      height: 56px;
+      background-color: #ef4444;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .clear-btn:hover {
+      background-color: #dc2626;
+    }
+
+    .clear-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .generate-btn {
+      flex: 1;
+      height: 56px;
+      background-color: #2563eb;
+      color: white;
+      font-size: 1.125rem;
+    }
+
+    .generate-btn:hover {
+      background-color: #1d4ed8;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    }
+
+    .generate-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Media Query untuk Responsivitas Layar HP (Reactive Layout) */
+    @media (max-width: 480px) {
+      body {
+        padding: 0;
+        background-color: #ffffff;
+      }
+      
+      .container {
+        max-width: 100%;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        min-height: 100vh;
+        padding: 1.25rem;
+      }
+
+      .items-container {
+        max-height: calc(100vh - 280px); /* Menyesuaikan tinggi agar tombol selalu terlihat di layar HP */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Buat Pesanan</h1>
+      <p>Tambahkan barang dan jumlah barang</p>
+    </header>
+
+    <div class="items-container" id="items-container">
+      <div class="item-row">
+        <div class="input-group name-group">
+          <label>Nama Produk</label>
+          <input type="text" class="item-name" placeholder="" oninput="clearError(this)">
+        </div>
+        <div class="input-group qty-group">
+          <label>Jumlah</label>
+          <input type="number" class="item-qty" value="1" min="1" oninput="clearError(this)">
+        </div>
+        <button class="delete-btn" onclick="removeItem(this)" aria-label="Hapus item">✕</button>
+      </div>
+    </div>
+
+    <button class="add-btn" onclick="addItem()">＋ Tambah Barang</button>
+
+    <div id="error-message">Mohon lengkapi kotak yang berwarna merah sebelum download.</div>
+
+    <div class="bottom-actions">
+      <button class="clear-btn" onclick="clearAll()" title="Hapus Semua Data" aria-label="Hapus Semua Data">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+      
+      <button class="generate-btn" onclick="generatePDF()">Download PDF</button>
+    </div>
+  </div>
+
+  <script>
+    const itemsContainer = document.getElementById('items-container');
+    const errorMessage = document.getElementById('error-message');
+
+    function clearError(inputElement) {
+      inputElement.classList.remove('input-error');
+      const remainingErrors = document.querySelectorAll('.input-error');
+      if (remainingErrors.length === 0) {
+        errorMessage.style.display = 'none';
+      }
+    }
+
+    function addItem() {
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.innerHTML = `
+        <div class="input-group name-group">
+          <label>Nama Produk</label>
+          <input type="text" class="item-name" placeholder="" oninput="clearError(this)">
+        </div>
+        <div class="input-group qty-group">
+          <label>Jumlah</label>
+          <input type="number" class="item-qty" value="1" min="1" oninput="clearError(this)">
+        </div>
+        <button class="delete-btn" onclick="removeItem(this)" aria-label="Hapus item">✕</button>
+      `;
+      itemsContainer.appendChild(row);
+      
+      // Auto-scroll ke bawah saat barang baru ditambahkan
+      setTimeout(() => {
+        itemsContainer.scrollTop = itemsContainer.scrollHeight;
+      }, 10);
+    }
+
+    function removeItem(button) {
+      if (itemsContainer.children.length > 1) {
+        button.parentElement.remove();
+        const remainingErrors = document.querySelectorAll('.input-error');
+        if (remainingErrors.length === 0) {
+          errorMessage.style.display = 'none';
+        }
+      } else {
+        const row = button.parentElement;
+        const nameInput = row.querySelector('.item-name');
+        const qtyInput = row.querySelector('.item-qty');
+        nameInput.value = '';
+        qtyInput.value = '1';
+        clearError(nameInput);
+        clearError(qtyInput);
+      }
+    }
+
+    function clearAll() {
+      const isConfirmed = confirm("Apakah Anda yakin ingin menghapus semua daftar barang?");
+      if (isConfirmed) {
+        itemsContainer.innerHTML = '';
+        errorMessage.style.display = 'none';
+        addItem();
+      }
+    }
+
+    function generatePDF() {
+      const rows = document.querySelectorAll('.item-row');
+      let isValid = true;
+
+      document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+      errorMessage.style.display = 'none';
+
+      rows.forEach((row) => {
+        const nameInput = row.querySelector('.item-name');
+        const qtyInput = row.querySelector('.item-qty');
+        
+        if (nameInput.value.trim() === '') {
+          nameInput.classList.add('input-error');
+          isValid = false;
+        }
+        
+        if (!qtyInput.value || parseInt(qtyInput.value) < 1) {
+          qtyInput.classList.add('input-error');
+          isValid = false;
+        }
+      });
+
+      if (!isValid) {
+        errorMessage.style.display = 'block';
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.text("Daftar Pesanan Produk", 14, 22);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      const tanggal = new Date().toLocaleDateString('id-ID', options);
+      doc.text("Tanggal: " + tanggal, 14, 30);
+      
+      doc.setFont("helvetica", "bold");
+      doc.text("Nama Produk", 14, 42);
+      doc.text("Jumlah", 150, 42);
+      
+      doc.setLineWidth(0.5);
+      doc.line(14, 45, 196, 45);
+      
+      doc.setFont("helvetica", "normal");
+      let yPosition = 53;
+      
+      rows.forEach((row) => {
+        const name = row.querySelector('.item-name').value.trim();
+        const qty = row.querySelector('.item-qty').value;
+        
+        doc.text(name, 14, yPosition);
+        doc.text(qty, 150, yPosition);
+        
+        yPosition += 10;
+      });
+
+      doc.save("pesanan-" + Date.now() + ".pdf");
+    }
+  </script>
+</body>
+</html>
