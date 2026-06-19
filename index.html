@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buat Pesanan</title>
+  <title>Buat Surat Jalan Dinamika Metalindo</title>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <style>
-    /* CSS Reset */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
@@ -17,7 +16,7 @@
       color: #111827;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Ubah agar lebih fleksibel */
+      align-items: flex-start;
       padding: 2rem 1rem;
       min-height: 100vh;
     }
@@ -25,7 +24,7 @@
     .container {
       background-color: #ffffff;
       width: 100%;
-      max-width: 500px; /* Sedikit dilebarkan untuk desktop */
+      max-width: 550px;
       border-radius: 12px;
       border: 1px solid #e5e7eb;
       padding: 1.5rem;
@@ -34,20 +33,23 @@
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
     
-    header { margin-bottom: 1.5rem; }
+    header { margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; }
     header h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     header p { color: #6b7280; font-size: 0.875rem; }
+
+    /* Input Nama Pelanggan */
+    .customer-section { margin-bottom: 1.5rem; }
     
     .items-container {
-      max-height: 55vh;
+      max-height: 45vh;
       overflow-y: auto;
       margin-bottom: 1rem;
-      padding-right: 0.25rem; /* Memberi ruang untuk scrollbar */
+      padding-right: 0.25rem;
     }
     
     .item-row {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.5rem;
       align-items: flex-end;
       background-color: #f9fafb;
       padding: 0.75rem;
@@ -55,18 +57,18 @@
       border: 1px solid #e5e7eb;
       margin-bottom: 0.75rem;
       transition: all 0.2s ease-in-out;
+      flex-wrap: wrap;
     }
 
-    .item-row:hover {
-      border-color: #d1d5db;
-    }
+    .item-row:hover { border-color: #d1d5db; }
     
     .input-group {
       display: flex;
       flex-direction: column;
     }
-    .input-group.name-group { flex: 1; }
-    .input-group.qty-group { width: 5.5rem; }
+    .input-group.name-group { flex: 1; min-width: 120px; }
+    .input-group.qty-group { width: 4.5rem; }
+    .input-group.unit-group { width: 5.5rem; }
     
     label {
       font-size: 0.75rem;
@@ -82,7 +84,7 @@
       border-radius: 6px;
       font-size: 16px;
       width: 100%;
-      transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     
     input:focus {
@@ -91,15 +93,9 @@
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    /* Styling untuk Input yang Error */
     input.input-error {
       border-color: #ef4444;
       background-color: #fef2f2;
-    }
-    
-    input.input-error:focus {
-      border-color: #ef4444;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
     }
     
     button {
@@ -120,28 +116,20 @@
       flex-shrink: 0;
     }
 
-    .delete-btn:hover {
-      background-color: #fee2e2;
-    }
+    .delete-btn:hover { background-color: #fee2e2; }
     
     .add-btn {
       width: 100%;
       height: 48px;
       background-color: #ffffff;
       color: #3b82f6;
-      border: 2px solid #3b82f6; /* Berubah menjadi solid */
+      border: 2px solid #3b82f6;
       margin-bottom: 1rem;
     }
 
-    .add-btn:hover {
-      background-color: #eff6ff;
-    }
+    .add-btn:hover { background-color: #eff6ff; }
+    .add-btn:active { transform: scale(0.98); }
 
-    .add-btn:active {
-      transform: scale(0.98);
-    }
-
-    /* Styling untuk Pesan Error Global */
     #error-message {
       color: #ef4444;
       font-size: 0.875rem;
@@ -168,13 +156,8 @@
       flex-shrink: 0;
     }
 
-    .clear-btn:hover {
-      background-color: #dc2626;
-    }
-
-    .clear-btn:active {
-      transform: scale(0.95);
-    }
+    .clear-btn:hover { background-color: #dc2626; }
+    .clear-btn:active { transform: scale(0.95); }
     
     .generate-btn {
       flex: 1;
@@ -188,30 +171,14 @@
       background-color: #1d4ed8;
       box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
     }
+    .generate-btn:active { transform: scale(0.98); }
 
-    .generate-btn:active {
-      transform: scale(0.98);
-    }
-
-    /* Media Query untuk Responsivitas Layar HP (Reactive Layout) */
     @media (max-width: 480px) {
-      body {
-        padding: 0;
-        background-color: #ffffff;
-      }
-      
+      body { padding: 0; background-color: #ffffff; }
       .container {
-        max-width: 100%;
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-        min-height: 100vh;
-        padding: 1.25rem;
+        max-width: 100%; border-radius: 0; border: none; box-shadow: none; min-height: 100vh; padding: 1.25rem;
       }
-
-      .items-container {
-        max-height: calc(100vh - 280px); /* Menyesuaikan tinggi agar tombol selalu terlihat di layar HP */
-      }
+      .items-container { max-height: calc(100vh - 350px); }
     }
   </style>
 </head>
@@ -219,25 +186,34 @@
 
   <div class="container">
     <header>
-      <h1>Buat Pesanan</h1>
-      <p>Tambahkan barang dan jumlah barang</p>
+      <h1>Surat Jalan Dinamika</h1>
+      <p>Buat format PDF otomatis sesuai nota toko</p>
     </header>
+
+    <div class="customer-section input-group">
+      <label>Nama Pelanggan / Kepada (Opsional)</label>
+      <input type="text" id="customer-name" placeholder="mis. Sumber Baja">
+    </div>
 
     <div class="items-container" id="items-container">
       <div class="item-row">
-        <div class="input-group name-group">
-          <label>Nama Produk</label>
-          <input type="text" class="item-name" placeholder="" oninput="clearError(this)">
-        </div>
         <div class="input-group qty-group">
-          <label>Jumlah</label>
+          <label>Qty</label>
           <input type="number" class="item-qty" value="1" min="1" oninput="clearError(this)">
+        </div>
+        <div class="input-group unit-group">
+          <label>Satuan</label>
+          <input type="text" class="item-unit" value="Batang" oninput="clearError(this)">
+        </div>
+        <div class="input-group name-group">
+          <label>Nama Barang (Ukuran/Tipe)</label>
+          <input type="text" class="item-name" placeholder="mis. Hollo 100x100 x 4,5 mm" oninput="clearError(this)">
         </div>
         <button class="delete-btn" onclick="removeItem(this)" aria-label="Hapus item">✕</button>
       </div>
     </div>
 
-    <button class="add-btn" onclick="addItem()">＋ Tambah Barang</button>
+    <button class="add-btn" onclick="addItem()">＋ Tambah Barang Lain</button>
 
     <div id="error-message">Mohon lengkapi kotak yang berwarna merah sebelum download.</div>
 
@@ -257,10 +233,20 @@
     const itemsContainer = document.getElementById('items-container');
     const errorMessage = document.getElementById('error-message');
 
+    // Fungsi Pengubah Angka Menjadi Terbilang (Contoh: 2 -> dua)
+    function angkaTerbilang(angka) {
+      const huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+      if (angka < 12) return huruf[angka];
+      if (angka < 20) return angkaTerbilang(angka - 10) + " belas";
+      if (angka < 100) return angkaTerbilang(Math.floor(angka / 10)) + " puluh " + angkaTerbilang(angka % 10);
+      if (angka < 200) return "seratus " + angkaTerbilang(angka - 100);
+      if (angka < 1000) return angkaTerbilang(Math.floor(angka / 100)) + " ratus " + angkaTerbilang(angka % 100);
+      return angka; // Jika sangat besar dibiarkan angkanya
+    }
+
     function clearError(inputElement) {
       inputElement.classList.remove('input-error');
-      const remainingErrors = document.querySelectorAll('.input-error');
-      if (remainingErrors.length === 0) {
+      if (document.querySelectorAll('.input-error').length === 0) {
         errorMessage.style.display = 'none';
       }
     }
@@ -269,46 +255,42 @@
       const row = document.createElement('div');
       row.className = 'item-row';
       row.innerHTML = `
-        <div class="input-group name-group">
-          <label>Nama Produk</label>
-          <input type="text" class="item-name" placeholder="" oninput="clearError(this)">
-        </div>
         <div class="input-group qty-group">
-          <label>Jumlah</label>
+          <label>Qty</label>
           <input type="number" class="item-qty" value="1" min="1" oninput="clearError(this)">
+        </div>
+        <div class="input-group unit-group">
+          <label>Satuan</label>
+          <input type="text" class="item-unit" value="Batang" oninput="clearError(this)">
+        </div>
+        <div class="input-group name-group">
+          <label>Nama Barang (Ukuran/Tipe)</label>
+          <input type="text" class="item-name" placeholder="mis. Hollo 100x100 x 4,5 mm" oninput="clearError(this)">
         </div>
         <button class="delete-btn" onclick="removeItem(this)" aria-label="Hapus item">✕</button>
       `;
       itemsContainer.appendChild(row);
-      
-      // Auto-scroll ke bawah saat barang baru ditambahkan
-      setTimeout(() => {
-        itemsContainer.scrollTop = itemsContainer.scrollHeight;
-      }, 10);
+      setTimeout(() => { itemsContainer.scrollTop = itemsContainer.scrollHeight; }, 10);
     }
 
     function removeItem(button) {
       if (itemsContainer.children.length > 1) {
         button.parentElement.remove();
-        const remainingErrors = document.querySelectorAll('.input-error');
-        if (remainingErrors.length === 0) {
+        if (document.querySelectorAll('.input-error').length === 0) {
           errorMessage.style.display = 'none';
         }
       } else {
         const row = button.parentElement;
-        const nameInput = row.querySelector('.item-name');
-        const qtyInput = row.querySelector('.item-qty');
-        nameInput.value = '';
-        qtyInput.value = '1';
-        clearError(nameInput);
-        clearError(qtyInput);
+        row.querySelector('.item-name').value = '';
+        row.querySelector('.item-qty').value = '1';
+        row.querySelector('.item-unit').value = 'Batang';
       }
     }
 
     function clearAll() {
-      const isConfirmed = confirm("Apakah Anda yakin ingin menghapus semua daftar barang?");
-      if (isConfirmed) {
+      if (confirm("Apakah Anda yakin ingin menghapus semua daftar barang?")) {
         itemsContainer.innerHTML = '';
+        document.getElementById('customer-name').value = '';
         errorMessage.style.display = 'none';
         addItem();
       }
@@ -329,7 +311,6 @@
           nameInput.classList.add('input-error');
           isValid = false;
         }
-        
         if (!qtyInput.value || parseInt(qtyInput.value) < 1) {
           qtyInput.classList.add('input-error');
           isValid = false;
@@ -341,41 +322,92 @@
         return;
       }
 
+      // Mulai buat PDF
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(20);
-      doc.text("Daftar Pesanan Produk", 14, 22);
-      
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.setFont("helvetica", "normal");
       
-      const options = { day: 'numeric', month: 'long', year: 'numeric' };
-      const tanggal = new Date().toLocaleDateString('id-ID', options);
-      doc.text("Tanggal: " + tanggal, 14, 30);
+      // === BAGIAN KIRI ATAS (KOP SURAT) ===
+      doc.text("Jl. Kembangan Utara Raya No.10A", 14, 20);
+      doc.text("Jakarta Barat", 14, 25);
+      doc.text("Telp. 08161181636", 14, 30);
+
+      // === BAGIAN KANAN ATAS (TANGGAL & PELANGGAN) ===
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const tanggalFormat = `${dd} - ${mm} - ${yyyy}`;
+      
+      const customerName = document.getElementById('customer-name').value.trim();
+
+      doc.text(`Jakarta, ${tanggalFormat}`, 140, 20);
+      if(customerName !== '') {
+        doc.text(customerName, 140, 25);
+      }
+      // Garis titik-titik Kepada
+      doc.text("...........................................................", 140, 26);
+      doc.text("...........................................................", 140, 31);
+
+      // === TABEL HEADER ===
+      let startY = 45;
+      doc.setLineWidth(0.3);
+      
+      doc.line(14, startY, 196, startY); // Garis atas tabel
       
       doc.setFont("helvetica", "bold");
-      doc.text("Nama Produk", 14, 42);
-      doc.text("Jumlah", 150, 42);
+      doc.text("No", 19, startY + 6, { align: "center" });
+      doc.text("BANYAKNYA", 52, startY + 6, { align: "center" });
+      doc.text("BARANG", 138, startY + 6, { align: "center" });
       
-      doc.setLineWidth(0.5);
-      doc.line(14, 45, 196, 45);
-      
+      doc.line(14, startY + 10, 196, startY + 10); // Garis bawah header
+
+      // === ISI TABEL (BARIS BARANG) ===
       doc.setFont("helvetica", "normal");
-      let yPosition = 53;
-      
+      let currentY = startY + 10;
+      let rowIndex = 1;
+
       rows.forEach((row) => {
         const name = row.querySelector('.item-name').value.trim();
-        const qty = row.querySelector('.item-qty').value;
+        const qty = parseInt(row.querySelector('.item-qty').value);
+        const unit = row.querySelector('.item-unit').value.trim() || 'Batang';
         
-        doc.text(name, 14, yPosition);
-        doc.text(qty, 150, yPosition);
+        // Format angka ke teks (Misal: 2 -> 2 ( dua ) Batang)
+        const teksAngka = angkaTerbilang(qty).trim();
+        const qtyFormat = `${qty} ( ${teksAngka} )    ${unit}`;
         
-        yPosition += 10;
+        doc.text(rowIndex.toString(), 19, currentY + 7, { align: "center" });
+        doc.text(qtyFormat, 26, currentY + 7);
+        doc.text(name, 82, currentY + 7);
+        
+        currentY += 10;
+        doc.line(14, currentY, 196, currentY); // Garis pemisah baris
+        rowIndex++;
       });
 
-      doc.save("pesanan-" + Date.now() + ".pdf");
+      // Tambahkan baris kosong jika item sedikit (Agar tabel tetap berbentuk rapi seperti di kertas)
+      const minimumRows = 6;
+      while(rowIndex <= minimumRows) {
+        currentY += 10;
+        doc.line(14, currentY, 196, currentY);
+        rowIndex++;
+      }
+
+      // Garis Vertikal Tabel
+      doc.line(14, startY, 14, currentY);   // Garis paling kiri
+      doc.line(24, startY, 24, currentY);   // Pembatas No | Banyaknya
+      doc.line(80, startY, 80, currentY);   // Pembatas Banyaknya | Barang
+      doc.line(196, startY, 196, currentY); // Garis paling kanan
+
+      // === FOOTER (TANDA TANGAN) ===
+      doc.text("Hormat Kami,", 14, currentY + 15);
+      doc.text("DINAMIKA METALINDO", 14, currentY + 20);
+      // Area bawahnya dibiarkan kosong untuk ttd
+
+      // Download file PDF
+      doc.save(`Surat-Jalan-${Date.now()}.pdf`);
     }
   </script>
 </body>
