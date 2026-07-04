@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buat Surat Jalan Dinamika Metalindo</title>
+  <title>Surat Jalan Dinamika Metalindo</title>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
@@ -12,7 +12,7 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f9fafb;
+      background-color: #f3f4f6;
       color: #111827;
       display: flex;
       justify-content: center;
@@ -24,24 +24,23 @@
     .container {
       background-color: #ffffff;
       width: 100%;
-      max-width: 550px;
+      max-width: 600px;
       border-radius: 12px;
       border: 1px solid #e5e7eb;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
     
     header { margin-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; }
-    header h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    header h1 { font-size: 1.5rem; margin-bottom: 0.25rem; font-weight: 700; color: #1e3a8a; }
     header p { color: #6b7280; font-size: 0.875rem; }
 
-    /* Input Nama Pelanggan */
     .customer-section { margin-bottom: 1.5rem; }
     
     .items-container {
-      max-height: 45vh;
+      max-height: 40vh;
       overflow-y: auto;
       margin-bottom: 1rem;
       padding-right: 0.25rem;
@@ -56,143 +55,74 @@
       border-radius: 8px;
       border: 1px solid #e5e7eb;
       margin-bottom: 0.75rem;
-      transition: all 0.2s ease-in-out;
+      transition: all 0.2s;
       flex-wrap: wrap;
     }
 
-    .item-row:hover { border-color: #d1d5db; }
+    .item-row:hover { border-color: #d1d5db; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     
-    .input-group {
-      display: flex;
-      flex-direction: column;
-    }
+    .input-group { display: flex; flex-direction: column; }
     .input-group.name-group { flex: 1; min-width: 120px; }
     .input-group.qty-group { width: 4.5rem; }
     .input-group.unit-group { width: 5.5rem; }
     
-    label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #4b5563;
-      margin-bottom: 0.25rem;
-    }
+    label { font-size: 0.75rem; font-weight: 600; color: #4b5563; margin-bottom: 0.35rem; }
     
-    input {
+    input[type="text"], input[type="number"] {
       height: 48px;
       padding: 0 0.75rem;
       border: 1px solid #d1d5db;
       border-radius: 6px;
       font-size: 16px;
       width: 100%;
+      background-color: #fff;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     
-    input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    input.input-error {
-      border-color: #ef4444;
-      background-color: #fef2f2;
-    }
+    input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    input.input-error { border-color: #ef4444; background-color: #fef2f2; }
     
-    button {
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 8px;
-      border: none;
-      transition: all 0.2s ease;
-    }
+    button { cursor: pointer; font-size: 16px; font-weight: 600; border-radius: 8px; border: none; transition: all 0.2s; }
     
-    .delete-btn {
-      width: 48px;
-      height: 48px;
-      background-color: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-      flex-shrink: 0;
-    }
-
+    .delete-btn { width: 48px; height: 48px; background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; flex-shrink: 0; }
     .delete-btn:hover { background-color: #fee2e2; }
     
-    .add-btn {
-      width: 100%;
-      height: 48px;
-      background-color: #ffffff;
-      color: #3b82f6;
-      border: 2px solid #3b82f6;
-      margin-bottom: 1rem;
-    }
-
-    .add-btn:hover { background-color: #eff6ff; }
+    .add-btn { width: 100%; height: 48px; background-color: #ffffff; color: #2563eb; border: 2px dashed #93c5fd; margin-bottom: 1.5rem; }
+    .add-btn:hover { background-color: #eff6ff; border-style: solid; }
     .add-btn:active { transform: scale(0.98); }
 
-    #error-message {
-      color: #ef4444;
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-align: center;
-      margin-bottom: 1rem;
-      display: none;
-    }
+    #error-message { color: #ef4444; font-size: 0.875rem; font-weight: 500; text-align: center; margin-bottom: 1rem; display: none; }
     
-    .bottom-actions {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: auto;
-    }
+    .bottom-actions { display: flex; gap: 0.75rem; margin-top: auto; }
     
-    .clear-btn {
-      width: 56px;
-      height: 56px;
-      background-color: #ef4444;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .clear-btn:hover { background-color: #dc2626; }
+    .clear-btn { width: 56px; height: 56px; background-color: #f3f4f6; color: #ef4444; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e5e7eb; }
+    .clear-btn:hover { background-color: #fee2e2; border-color: #fca5a5; }
     .clear-btn:active { transform: scale(0.95); }
     
-    .generate-btn {
-      flex: 1;
-      height: 56px;
-      background-color: #2563eb;
-      color: white;
-      font-size: 1.125rem;
-    }
-
-    .generate-btn:hover {
-      background-color: #1d4ed8;
-      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-    }
+    .generate-btn { flex: 1; height: 56px; background-color: #1e3a8a; color: white; font-size: 1.125rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .generate-btn:hover { background-color: #1e40af; box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.3); }
     .generate-btn:active { transform: scale(0.98); }
 
     @media (max-width: 480px) {
       body { padding: 0; background-color: #ffffff; }
-      .container {
-        max-width: 100%; border-radius: 0; border: none; box-shadow: none; min-height: 100vh; padding: 1.25rem;
-      }
-      .items-container { max-height: calc(100vh - 350px); }
+      .container { max-width: 100%; border-radius: 0; border: none; box-shadow: none; min-height: 100vh; padding: 1.25rem; }
+      .items-container { max-height: calc(100vh - 400px); }
     }
   </style>
 </head>
 <body>
 
+  <img id="signature-img" src="sign.png" style="display: none;" crossorigin="anonymous" alt="Tanda Tangan">
+
   <div class="container">
     <header>
       <h1>Surat Jalan Dinamika</h1>
-      <p>Buat format PDF otomatis sesuai nota toko</p>
+      <p>Buat format PDF profesional otomatis</p>
     </header>
 
     <div class="customer-section input-group">
-      <label>Nama Pelanggan / Kepada (Opsional)</label>
-      <input type="text" id="customer-name" placeholder="mis. Sumber Baja">
+      <label>Nama Pelanggan (Kepada Yth.)</label>
+      <input type="text" id="customer-name" placeholder="mis. PT. Sumber Baja Makmur">
     </div>
 
     <div class="items-container" id="items-container">
@@ -219,13 +149,20 @@
 
     <div class="bottom-actions">
       <button class="clear-btn" onclick="clearAll()" title="Hapus Semua Data" aria-label="Hapus Semua Data">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="3 6 5 6 21 6"></polyline>
           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
         </svg>
       </button>
       
-      <button class="generate-btn" onclick="generatePDF()">Download PDF</button>
+      <button class="generate-btn" onclick="generatePDF()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download PDF
+      </button>
     </div>
   </div>
 
@@ -233,7 +170,6 @@
     const itemsContainer = document.getElementById('items-container');
     const errorMessage = document.getElementById('error-message');
 
-    // Fungsi Pengubah Angka Menjadi Terbilang (Contoh: 2 -> dua)
     function angkaTerbilang(angka) {
       const huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
       if (angka < 12) return huruf[angka];
@@ -241,7 +177,7 @@
       if (angka < 100) return angkaTerbilang(Math.floor(angka / 10)) + " puluh " + angkaTerbilang(angka % 10);
       if (angka < 200) return "seratus " + angkaTerbilang(angka - 100);
       if (angka < 1000) return angkaTerbilang(Math.floor(angka / 100)) + " ratus " + angkaTerbilang(angka % 100);
-      return angka; // Jika sangat besar dibiarkan angkanya
+      return angka; 
     }
 
     function clearError(inputElement) {
@@ -322,92 +258,139 @@
         return;
       }
 
-      // Mulai buat PDF
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
+      const pageHeight = 297;
       
+      // === KOP SURAT PROFESIONAL ===
+      doc.setTextColor(30, 58, 138);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(26);
+      doc.text("DINAMIKA METALINDO", 14, 24);
+
+      doc.setTextColor(75, 85, 99);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      
-      // === BAGIAN KIRI ATAS (KOP SURAT) ===
-      doc.text("Jl. Kembangan Utara Raya No.10A", 14, 20);
-      doc.text("Jakarta Barat", 14, 25);
-      doc.text("Telp. 08161181636", 14, 30);
+      doc.text("Jl. Kembangan Utara Raya No.10A, Jakarta Barat", 14, 31);
+      doc.text("Telp: 0816-1181-636", 14, 36);
 
-      // === BAGIAN KANAN ATAS (TANGGAL & PELANGGAN) ===
+      // === INFORMASI PELANGGAN ===
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, '0');
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const yyyy = today.getFullYear();
-      const tanggalFormat = `${dd} - ${mm} - ${yyyy}`;
-      
+      const tanggalFormat = `${dd} / ${mm} / ${yyyy}`;
       const customerName = document.getElementById('customer-name').value.trim();
 
-      doc.text(`Jakarta, ${tanggalFormat}`, 140, 20);
-      if(customerName !== '') {
-        doc.text(customerName, 140, 25);
-      }
-      // Garis titik-titik Kepada
-      doc.text("...........................................................", 140, 26);
-      doc.text("...........................................................", 140, 31);
+      doc.setDrawColor(209, 213, 219);
+      doc.setFillColor(249, 250, 251);
+      doc.roundedRect(120, 16, 76, 23, 2, 2, 'FD'); 
 
-      // === TABEL HEADER ===
-      let startY = 45;
-      doc.setLineWidth(0.3);
+      doc.setTextColor(31, 41, 55);
+      doc.setFont("helvetica", "normal");
+      doc.text("Jakarta,", 125, 23);
+      doc.setFont("helvetica", "bold");
+      doc.text(tanggalFormat, 140, 23);
       
-      doc.line(14, startY, 196, startY); // Garis atas tabel
+      doc.setFont("helvetica", "normal");
+      doc.text("Kepada Yth,", 125, 29);
       
       doc.setFont("helvetica", "bold");
-      doc.text("No", 19, startY + 6, { align: "center" });
-      doc.text("BANYAKNYA", 52, startY + 6, { align: "center" });
-      doc.text("BARANG", 138, startY + 6, { align: "center" });
-      
-      doc.line(14, startY + 10, 196, startY + 10); // Garis bawah header
+      if(customerName !== '') {
+        const splitName = doc.splitTextToSize(customerName, 66);
+        doc.text(splitName[0], 125, 35);
+      } else {
+        doc.text("-", 125, 35);
+      }
 
-      // === ISI TABEL (BARIS BARANG) ===
-      doc.setFont("helvetica", "normal");
-      let currentY = startY + 10;
+      // === TABEL HEADER ===
+      let startY = 48;
+      let currentY = startY;
+      
+      function drawHeader(y) {
+        doc.setFillColor(30, 58, 138);
+        doc.rect(14, y, 182, 10, 'F'); 
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.text("NO", 21, y + 6.5, { align: "center" });
+        doc.text("BANYAKNYA", 55, y + 6.5, { align: "center" });
+        doc.text("NAMA BARANG", 140, y + 6.5, { align: "center" });
+        return y + 10;
+      }
+
+      currentY = drawHeader(currentY);
+
+      // === ISI TABEL ===
+      doc.setTextColor(31, 41, 55);
+      doc.setDrawColor(229, 231, 235);
       let rowIndex = 1;
 
       rows.forEach((row) => {
+        if (currentY > pageHeight - 60) {
+          doc.addPage();
+          currentY = 20;
+          currentY = drawHeader(currentY);
+          doc.setTextColor(31, 41, 55);
+          doc.setDrawColor(229, 231, 235);
+        }
+
         const name = row.querySelector('.item-name').value.trim();
         const qty = parseInt(row.querySelector('.item-qty').value);
         const unit = row.querySelector('.item-unit').value.trim() || 'Batang';
         
-        // Format angka ke teks (Misal: 2 -> 2 ( dua ) Batang)
         const teksAngka = angkaTerbilang(qty).trim();
-        const qtyFormat = `${qty} ( ${teksAngka} )    ${unit}`;
+        const qtyFormat = `${qty} ( ${teksAngka} ) ${unit}`;
         
-        doc.text(rowIndex.toString(), 19, currentY + 7, { align: "center" });
-        doc.text(qtyFormat, 26, currentY + 7);
-        doc.text(name, 82, currentY + 7);
+        doc.setFont("helvetica", "normal");
+        
+        doc.line(14, currentY, 14, currentY + 10);
+        doc.line(196, currentY, 196, currentY + 10);
+        
+        doc.text(rowIndex.toString(), 21, currentY + 6.5, { align: "center" });
+        doc.text(qtyFormat, 32, currentY + 6.5);
+        doc.text(name, 85, currentY + 6.5);
         
         currentY += 10;
-        doc.line(14, currentY, 196, currentY); // Garis pemisah baris
+        doc.line(14, currentY, 196, currentY); 
         rowIndex++;
       });
 
-      // Tambahkan baris kosong jika item sedikit (Agar tabel tetap berbentuk rapi seperti di kertas)
-      const minimumRows = 6;
-      while(rowIndex <= minimumRows) {
+      while(rowIndex <= 6) {
+        doc.line(14, currentY, 14, currentY + 10);
+        doc.line(196, currentY, 196, currentY + 10);
         currentY += 10;
         doc.line(14, currentY, 196, currentY);
         rowIndex++;
       }
 
-      // Garis Vertikal Tabel
-      doc.line(14, startY, 14, currentY);   // Garis paling kiri
-      doc.line(24, startY, 24, currentY);   // Pembatas No | Banyaknya
-      doc.line(80, startY, 80, currentY);   // Pembatas Banyaknya | Barang
-      doc.line(196, startY, 196, currentY); // Garis paling kanan
+      // === FOOTER & TANDA TANGAN OTOMATIS ===
+      if (currentY > pageHeight - 50) {
+        doc.addPage();
+        currentY = 20;
+      }
 
-      // === FOOTER (TANDA TANGAN) ===
-      doc.text("Hormat Kami,", 14, currentY + 15);
-      doc.text("DINAMIKA METALINDO", 14, currentY + 20);
-      // Area bawahnya dibiarkan kosong untuk ttd
+      currentY += 10;
+      doc.setFont("helvetica", "normal");
+      doc.text("Hormat Kami,", 170, currentY, { align: "center" });
 
-      // Download file PDF
-      doc.save(`Surat-Jalan-${Date.now()}.pdf`);
+      // Cek dan Muat Gambar Tanda Tangan dari HTML
+      const signatureImg = document.getElementById('signature-img');
+      // Pastikan gambar sudah berhasil di-load oleh browser
+      if (signatureImg.complete && signatureImg.naturalWidth > 0) {
+        // Parameter: (Gambar, Format, Posisi X, Posisi Y, Lebar, Tinggi)
+        doc.addImage(signatureImg, 'PNG', 150, currentY + 2, 40, 20);
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text("DINAMIKA METALINDO", 170, currentY + 30, { align: "center" });
+      
+      doc.setDrawColor(31, 41, 55);
+      doc.setLineWidth(0.5);
+      doc.line(145, currentY + 32, 195, currentY + 32);
+
+      doc.save(`Surat-Jalan-Dinamika-${Date.now()}.pdf`);
     }
   </script>
 </body>
